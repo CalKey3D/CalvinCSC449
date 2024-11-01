@@ -10,6 +10,8 @@ class SOSGame:
         self.player_choice = {'blue': 'S', 'red': 'S'}  # Default choice for each player
         self.sos_count = {'blue': 0, 'red': 0}
         self.game_over = False
+        self.game_over_counter = 0
+        self.game_over_max = board_size ** 2
 
     def make_move(self, row, col, symbol, gui):
         if self.game_over:
@@ -20,12 +22,18 @@ class SOSGame:
             raise ValueError(f"Invalid move: Position ({row}, {col}) is already occupied.")
 
         self.board[row][col] = symbol
+
+        # increment counter that is used to detect full board
+        # game over if counter hits the max
+        self.game_over_counter += 1
+        if self.game_over_counter >= self.game_over_max:
+            self.game_over = True
+
         if self.check_sos(row, col):
             self.sos_count[self.current_player] += 1
+
             if self.game_mode == 'simple':
                 self.game_over = True
-            else:
-                return True  # Player gets another turn
         self.current_player = 'red' if self.current_player == 'blue' else 'blue'
         return True
 
@@ -62,6 +70,7 @@ class SOSGame:
         self.current_player = 'blue'
         self.sos_count = {'blue': 0, 'red': 0}
         self.game_over = False
+        self.game_over_counter = 0
 
 class SOSGUI:
     def __init__(self, root, game):
@@ -103,7 +112,6 @@ class SOSGUI:
             if self.game.game_over:
                 winner = 'Red' if self.game.current_player == 'blue' else 'Blue'
                 messagebox.showinfo("Game Over", f"{winner} wins!")
-                self.reset_board()
             else:
                 self.update_turn_label()
 
