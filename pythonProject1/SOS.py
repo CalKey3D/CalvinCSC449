@@ -29,38 +29,73 @@ class SOSGame:
         if self.game_over_counter >= self.game_over_max:
             self.game_over = True
 
-        if self.check_sos(row, col):
-            self.sos_count[self.current_player] += 1
+        sos_count = self.check_sos(row, col, symbol)
+        if sos_count > 0:
+            self.sos_count[self.current_player] += sos_count
 
             if self.game_mode == 'simple':
                 self.game_over = True
         self.current_player = 'red' if self.current_player == 'blue' else 'blue'
         return True
 
-    def check_sos(self, row, col):
-        directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
-        for dr, dc in directions:
-            for i in range(-2, 1):
-                if self.check_sequence(row + dr * i, col + dc * i):
-                    return True
-        return False
+    def check_sos(self, row, col, symbol):
 
-    def check_sequence(self, row, col):
-        try:
-            return (self.board[row][col] == 'S' and
-                    self.board[row + 1][col] == 'O' and
-                    self.board[row + 2][col] == 'S') or \
-                   (self.board[row][col] == 'S' and
-                    self.board[row][col + 1] == 'O' and
-                    self.board[row][col + 2] == 'S') or \
-                   (self.board[row][col] == 'S' and
-                    self.board[row + 1][col + 1] == 'O' and
-                    self.board[row + 2][col + 2] == 'S') or \
-                   (self.board[row][col] == 'S' and
-                    self.board[row + 1][col - 1] == 'O' and
-                    self.board[row + 2][col - 2] == 'S')
-        except IndexError:
-            return False
+        if symbol == 'S':
+            return self.check_sequence_s(row, col)
+        if symbol == 'O':
+            return self.check_sequence_o(row, col)
+
+    def check_sequence_o(self, row, col):
+
+        sequences_found = 0
+        pairs = [[(-1, 0), (1, 0)],  # Vertical
+                 [(-1, 1), (1, -1)], # y=x
+                 [(0, -1), (0, 1)],  # horizontal
+                 [(-1, -1), (1, 1)]]  # y=-x
+
+        for pair in pairs:
+            s = 0
+            for tup in pair:
+                try:
+                    if row + tup[0] < 0 or col + tup[1] < 0:
+                        continue
+                    if self.board[row + tup[0]][col + tup[1]] == 'S':
+                        s += 1
+                except IndexError:
+                    print("index error")
+                    break
+            if s == 2:
+                sequences_found += 1
+                print("sequence found")
+        return sequences_found
+
+    def check_sequence_s(self, row, col):
+
+        sequences_found = 0
+        pairs = [[(-1, 0), (-2, 0)],  # up
+                 [(-1, 1), (-2, 2)],  # up right
+                 [(0, 1), (0, 2)],  # right
+                 [(1, 1), (2, 2)],  # down right
+                 [(1, 0), (2, 0)],  # down
+                 [(1, -1), (2, -2)],  # down left
+                 [(0, -1), (0, -2)],  # left
+                 [(-1, -1), (-2, -2)]]  # up left
+
+        for pair in pairs:
+            try:
+                if row + pair[0][0] < 0 or col + pair[0][1] < 0:
+                    continue
+                if self.board[row + pair[0][0]][col + pair[0][1]] != 'O':
+                    continue
+                if row + pair[1][0] < 0 or col + pair[1][1] < 0:
+                    continue
+                if self.board[row + pair[1][0]][col + pair[1][1]] == 'S':
+                    sequences_found += 1
+                    print("sequence found")
+            except IndexError:
+                print("index error")
+                continue
+        return sequences_found
 
     def get_board(self):
         return self.board
