@@ -105,6 +105,8 @@ class SOSSimpleGame(SOSGame):
 
         self.check_sos(row, col, symbol)
 
+        self.change_turn()
+
         if self.game_over_counter >= self.game_over_max:
             self.game_over = True
             return
@@ -112,8 +114,6 @@ class SOSSimpleGame(SOSGame):
         if self.sos_count['red'] > 0 or self.sos_count['blue'] > 0:
             self.game_over = True
             return
-
-        self.change_turn()
 
 class SOSGeneralGame(SOSGame):
     def make_move(self, row, col, symbol, gui):
@@ -129,11 +129,11 @@ class SOSGeneralGame(SOSGame):
 
         self.check_sos(row, col, symbol)
 
+        self.change_turn()
+
         if self.game_over_counter >= self.game_over_max:
             self.game_over = True
             return
-
-        self.change_turn()
 
 class SOSGUI:
     def __init__(self, root, game):
