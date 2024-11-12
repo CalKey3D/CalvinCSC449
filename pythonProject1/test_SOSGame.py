@@ -149,7 +149,7 @@ class TestWinnerCheckInFullGeneralGame(unittest.TestCase):
         self.assertGreater(game.sos_count['blue'], game.sos_count['red'])
 
 class TestComputerOpponent(unittest.TestCase):
-    #AC 8.1
+    #AC 8.1 test cpu selection
     def test_select_computer_opponent(self):
 
         CPU_instance = CPU()
@@ -161,7 +161,7 @@ class TestComputerOpponent(unittest.TestCase):
         self.assertTrue(game.CPU_Player['red'])
         self.assertFalse(game.CPU_Player['blue'])
 
-    #AC 8.2
+    #AC 8.2 checks valid move by cpu
     def test_computer_makes_valid_move(self):
 
         CPU_instance = CPU()
@@ -183,7 +183,7 @@ class TestComputerOpponent(unittest.TestCase):
         self.assertEqual(game.board[row][col], symbol)
         self.assertIn((row, col), empty_cells_before)
 
-    # AC 9.1
+    # AC 9.1 checks cpu vs cpu
     def test_computer_vs_computer_mode(self):
 
         CPU_instance = CPU()
@@ -197,7 +197,7 @@ class TestComputerOpponent(unittest.TestCase):
         self.assertTrue(game.CPU_Player['blue'])
         self.assertTrue(game.CPU_Player['red'])
 
-    # AC 9.2
+    # AC 9.2 checks automatic gameplay for cpu vs cpu
     def test_automatic_gameplay(self):
 
         CPU_instance = CPU()

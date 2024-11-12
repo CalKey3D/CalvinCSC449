@@ -1,0 +1,56 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.8.4">
+  <diagram name="Page-1" id="c4acf3e9-155e-7222-9cf6-157b1a14988f">
+    <mxGraphModel dx="792" dy="1133" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5d2195bd80daf111-18" value="&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;SOSGame&lt;/b&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- CPU: CPU&lt;br&gt;&amp;nbsp;&amp;nbsp;- board: List&amp;lt;List&amp;lt;str&amp;gt;&amp;gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;- current_player: str&lt;br&gt;&amp;nbsp;&amp;nbsp;- sos_count: Dict&amp;lt;str, int&amp;gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;- CPU_Player: Dict&amp;lt;str, bool&amp;gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;- game_over: bool&lt;br&gt;&amp;nbsp;&amp;nbsp;- game_over_counter: int&lt;br&gt;&amp;nbsp;&amp;nbsp;- game_over_max: int&lt;br&gt;&amp;nbsp;&amp;nbsp;- current_turn_sequences: List&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ check_sos(row: int, col: int, symbol: str): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ change_turn(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ reset_game(): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1" parent="1" vertex="1">
+          <mxGeometry x="320" y="60" width="270" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="5d2195bd80daf111-20" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SOSSimpleGame&lt;/b&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ make_move(row: int, col: int, symbol: str, gui: SOSGUI): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1" parent="1" vertex="1">
+          <mxGeometry x="100" y="460" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SOSGeneralGame&lt;/b&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ make_move(row: int, col: int, symbol: str, gui: SOSGUI): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1" vertex="1" parent="1">
+          <mxGeometry x="470" y="460" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;CPU&lt;/b&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp; + calculate_move(board: List&amp;lt;List&amp;lt;str&amp;gt;&amp;gt;): (int, int, str)&lt;br&gt;&amp;nbsp;&amp;nbsp;+ check_sos(row: int, col: int, symbol: str, board: List&amp;lt;List&amp;lt;str&amp;gt;&amp;gt;): bool&lt;br&gt;&amp;nbsp;&amp;nbsp;+ check_sequence_s(row: int, col: int, board: List&amp;lt;List&amp;lt;str&amp;gt;&amp;gt;): bool&lt;br&gt;&amp;nbsp;&amp;nbsp;+ check_sequence_o(row: int, col: int, board: List&amp;lt;List&amp;lt;str&amp;gt;&amp;gt;): bool&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="910" width="400" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-3" value="&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;SOSGUI&lt;/b&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- root: Tk&lt;br&gt;&amp;nbsp;&amp;nbsp;- game: SOSGame&lt;br&gt;&amp;nbsp;&amp;nbsp;- symbol_choice_blue: StringVar&lt;br&gt;&amp;nbsp;&amp;nbsp;- symbol_choice_red: StringVar&lt;br&gt;&amp;nbsp;&amp;nbsp;- canvas: Canvas&lt;br&gt;&amp;nbsp;&amp;nbsp;- turn_label: Label&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ &lt;strong&gt;init&lt;/strong&gt;(root: Tk, game: SOSGame): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ setup_game(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ show_startup_dialog(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ create_board(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ create_controls(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ toggle_cpu_blue(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ toggle_cpu_red(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ on_canvas_click(event): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ update_after_move(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ draw_sos_lines(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ update_board(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ update_turn_label(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ reset_board(): void&lt;br&gt;&amp;nbsp;&amp;nbsp;+ show_message(message: str): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1" vertex="1" parent="1">
+          <mxGeometry x="520" y="680" width="270" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-6" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;" edge="1" parent="1" source="5d2195bd80daf111-20" target="5d2195bd80daf111-18">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="350" y="590" as="sourcePoint" />
+            <mxPoint x="510" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-7" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;" edge="1" parent="1" source="TuZY6xeCmga1cw5RlPiP-1" target="5d2195bd80daf111-18">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="470" as="sourcePoint" />
+            <mxPoint x="370" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-8" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;rounded=0;" edge="1" parent="1" source="5d2195bd80daf111-18" target="TuZY6xeCmga1cw5RlPiP-2">
+          <mxGeometry x="-1" y="3" relative="1" as="geometry">
+            <mxPoint x="350" y="620" as="sourcePoint" />
+            <mxPoint x="510" y="620" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="50" y="225" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TuZY6xeCmga1cw5RlPiP-9" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;rounded=0;" edge="1" parent="1" source="TuZY6xeCmga1cw5RlPiP-3" target="5d2195bd80daf111-18">
+          <mxGeometry x="-1" y="3" relative="1" as="geometry">
+            <mxPoint x="510" y="760" as="sourcePoint" />
+            <mxPoint x="510" y="650" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="80" y="865" />
+              <mxPoint x="80" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

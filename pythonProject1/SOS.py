@@ -70,7 +70,7 @@ class CPU:
                         return row, col, 'S'
                     elif self.check_sos(row, col, 'O', board):
                         return row, col, 'O'
-        print("Sequence not found, moving to logic 2...")
+        # print("Sequence not found, moving to logic 2...")
 
         # finds the first 'S' and tries to place an 'O' to the right of it
         for row in board_size:
@@ -81,7 +81,7 @@ class CPU:
                             return row, col + 1, 'O'
                     except IndexError:
                         continue
-        print("Moving to logic 3...")
+        # print("Moving to logic 3...")
 
 
         # places an 'S' in the first available spot
