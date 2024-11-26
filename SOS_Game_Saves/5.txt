@@ -1,0 +1,7 @@
+BoardSize:6
+GameMode:simple
+CPUPlayers:Blue=False,Red=False
+Moves:
+blue,0,0,S
+red,0,1,O
+blue,0,2,S
