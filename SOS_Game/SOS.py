@@ -3,7 +3,7 @@ from tkinter import messagebox, filedialog
 from abc import ABC, abstractmethod
 import requests
 
-#API_KEY = "PLACE_API_KEY_HERE"
+API_KEY = "PLACE_API_KEY_HERE"
 
 #LLM Driven CPU
 class CPU:
