@@ -3,7 +3,7 @@ from tkinter import messagebox, filedialog
 from abc import ABC, abstractmethod
 import requests
 
-API_KEY = "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"  # Replace with your actual OpenAI API key
+#API_KEY = "PLACE_API_KEY_HERE"
 
 #LLM Driven CPU
 class CPU:
