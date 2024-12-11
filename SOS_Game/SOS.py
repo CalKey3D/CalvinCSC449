@@ -1,94 +1,85 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
 from abc import ABC, abstractmethod
+import requests
 
+API_KEY = "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"  # Replace with your actual OpenAI API key
+
+#LLM Driven CPU
 class CPU:
-    def check_sos(self, row, col, symbol, board):
+    def calculate_move(self, board, max_retries=3):
+        # Convert board to a string so that the LLM can process it properly
+        board_str = ""
+        for row in board:
+            row_str = " ".join(cell if cell != ' ' else '_' for cell in row)
+            board_str += row_str + "\n"
 
-        if symbol == 'S':
-            return self.check_sequence_s(row, col, board)
-        if symbol == 'O':
-            return self.check_sequence_o(row, col, board)
+        prompt = f"""
+        You are playing an SOS game. The board is given below. Underscores ('_') represent empty cells; 'S' and 'O' represent occupied cells.
 
-    def check_sequence_o(self, row, col, board):
+        Goal: Make a move that leads to forming "SOS" if possible in horizontal, vertical, or diagonal directions. 
+        - You must pick an empty cell (denoted by '_').
+        - The board uses zero-based indexing.
+        - Respond with "row,column,letter" (where letter is 'S' or 'O').
+        - Do not pick a cell that is already occupied (not '_').
 
-        pairs = [[(-1, 0), (1, 0)],
-                 [(-1, 1), (1, -1)],
-                 [(0, -1), (0, 1)],
-                 [(-1, -1), (1, 1)]]
-        for pair in pairs:
+        Current board:
+        {board_str}
+
+        It's your turn. Only provide the move (no other explanation).
+        """
+
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json",
+        }
+        data = {
+            "model": "gpt-4o",  # Can swap to "gpt-3.5-turbo" if this is too expensive, but seems reasonable
+            "messages": [{"role": "user", "content": prompt.strip()}],
+            "max_tokens": 300,
+            "temperature": 0.4,
+        }
+
+        for attempt in range(max_retries):
             try:
-                if row + pair[0][0] < 0 or col + pair[0][1] < 0:
-                    continue
-                if board[row + pair[0][0]][col + pair[0][1]] != 'S':
-                    continue
-                if row + pair[1][0] < 0 or col + pair[1][1] < 0:
-                    continue
-                if board[row + pair[1][0]][col + pair[1][1]] == 'S':
-                    return True
+                # Send the request
+                response = requests.post(url, headers=headers, json=data)
 
-            except IndexError:
-                continue
+                if response.status_code == 200:
+                    json_response = response.json()
+                    move = json_response['choices'][0]['message']['content'].strip()
+                    row_str, col_str, letter = move.split(",")
+                    row = int(row_str.strip())
+                    col = int(col_str.strip())
+                    letter = letter.strip().upper()
 
-        return False
+                    # Validate the output
+                    if letter not in ['S', 'O']:
+                        raise ValueError("LLM returned an invalid symbol. Must be 'S' or 'O'.")
 
-    def check_sequence_s(self, row, col, board):
+                    # Verify not an occupied cell
+                    if board[row][col] != ' ':
+                        raise ValueError("LLM chose an occupied cell.")
 
-        pairs = [[(-1, 0), (-2, 0)],      # up
-                 [(-1, 1), (-2, 2)],      # up right
-                 [(0, 1), (0, 2)],        # right
-                 [(1, 1), (2, 2)],        # down right
-                 [(1, 0), (2, 0)],        # down
-                 [(1, -1), (2, -2)],      # down left
-                 [(0, -1), (0, -2)],      # left
-                 [(-1, -1), (-2, -2)]]    # up left
+                    return row, col, letter
 
-        for pair in pairs:
-            try:
-                if row + pair[0][0] < 0 or col + pair[0][1] < 0:
-                    continue
-                if board[row + pair[0][0]][col + pair[0][1]] != 'O':
-                    continue
-                if row + pair[1][0] < 0 or col + pair[1][1] < 0:
-                    continue
-                if board[row + pair[1][0]][col + pair[1][1]] == 'S':
-                    return True
+                else:
+                    # For any API errors
+                    print(f"Error {response.status_code}: {response.text}")
+                    raise Exception("Failed to get a valid response from LLM.")
 
-            except IndexError:
-                continue
-
-        return False
-
-    def calculate_move(self, board):
-
-        board_size = range(len(board))
-
-        # Checks for possible sequences throughout the board
-        for row in board_size:
-            for col in board_size:
-                if board[row][col] == ' ':
-                    if self.check_sos(row, col, 'S', board):
-                        return row, col, 'S'
-                    elif self.check_sos(row, col, 'O', board):
-                        return row, col, 'O'
-
-        # Finds the first 'S' and tries to place an 'O' to the right of it
-        for row in board_size:
-            for col in board_size:
-                if board[row][col] == 'S':
-                    try:
-                        if board[row][col + 1] == ' ':
-                            return row, col + 1, 'O'
-                    except IndexError:
-                        continue
-
-        # Places an 'S' in the first available spot
-        for row in board_size:
-            for col in board_size:
-                if board[row][col] == ' ':
-                    return row, col, 'S'
-
-        raise Exception("No possible move, board might be full.")
+            except Exception as e:
+                # Log the error and retry up to the max_retries count
+                print(f"Attempt {attempt + 1} failed: {e}")
+                if attempt == max_retries - 1:
+                    # If all retries fail, just places into the first empty cell
+                    print("All retries failed. Placed S into first empty cell.")
+                    for r in range(len(board)):
+                        for c in range(len(board[r])):
+                            if board[r][c] == ' ':
+                                return r, c, 'S'
+                    raise Exception("No possible move.")
 
 class SOSGame(ABC):
     def __init__(self, board_size, CPU):
@@ -264,7 +255,6 @@ class SOSGUI:
             self.setup_game()
 
     def setup_game(self):
-        # Initialize the canvas and controls only if they don't exist
         if not hasattr(self, 'canvas'):
             self.canvas = tk.Canvas(self.root)
             self.canvas.grid(row=0, column=0, columnspan=self.game.board_size)
@@ -321,13 +311,9 @@ class SOSGUI:
             for col in range(self.game.board_size):
                 x1, y1 = col * cell_size, row * cell_size
                 x2, y2 = x1 + cell_size, y1 + cell_size
-                # Draw each cell as a rectangle on the canvas to create grid lines
                 self.canvas.create_rectangle(x1, y1, x2, y2, outline="black", tags="grid")
 
-        # Draw the outer border for the entire grid
         self.canvas.create_rectangle(2, 2, board_size, board_size, outline="black", width=1, tags="outer_border")
-
-        # Bind mouse clicks to the canvas
         self.canvas.bind("<Button-1>", self.on_canvas_click)
 
     def toggle_cpu_blue(self):
@@ -345,7 +331,6 @@ class SOSGUI:
             self.update_after_move()
 
     def create_controls(self):
-        # Create controls only if they don't exist
         if not hasattr(self, 'symbol_frame'):
             self.symbol_frame = tk.Frame(self.root)
             self.symbol_frame.grid(row=self.game.board_size, column=0, columnspan=self.game.board_size)
@@ -358,11 +343,9 @@ class SOSGUI:
             tk.Radiobutton(self.symbol_frame, text='O', variable=self.symbol_choice_red, value='O').pack(side=tk.LEFT)
             tk.Checkbutton(self.symbol_frame, text='CPU', command=self.toggle_cpu_red).pack(side=tk.LEFT)
 
-            # Add Replay button
             replay_button = tk.Button(self.symbol_frame, text="Replay", command=self.reset_board)
             replay_button.pack(side=tk.LEFT)
 
-            # Add Turn label
             self.turn_label = tk.Label(self.symbol_frame, text="Blue's Turn", fg="blue")
             self.turn_label.pack(side=tk.LEFT)
 
@@ -371,7 +354,7 @@ class SOSGUI:
         row, col = event.y // cell_size, event.x // cell_size
 
         if self.game.game_over:
-            return  # Ignore clicks if the game is over
+            return
 
         if self.game.current_player == 'blue':
             symbol = self.symbol_choice_blue.get()
@@ -379,11 +362,9 @@ class SOSGUI:
             symbol = self.symbol_choice_red.get()
 
         try:
-            # Check if the move is valid, then update board and draw the symbol
             self.game.make_move(row, col, symbol, self)
             self.update_after_move()
         except Exception as e:
-            # Handle invalid moves or other exceptions
             pass
 
     def update_after_move(self):
@@ -398,7 +379,6 @@ class SOSGUI:
                 winner = 'No one'
 
             messagebox.showinfo("Game Over", f"{winner} wins!")
-            # Close the record file if open
             if hasattr(self, 'record_file') and self.record_file and not self.record_file.closed:
                 self.record_file.close()
         else:
@@ -426,15 +406,12 @@ class SOSGUI:
         cell_size = 50
 
         for sequence in self.game.current_turn_sequences:
-            # Unpack the sequence into individual cell coordinates
             (r1, c1), (r2, c2), (r3, c3) = sequence
 
-            # Calculate the center coordinates of each cell
             x1, y1 = c1 * cell_size + 25, r1 * cell_size + 25
             x2, y2 = c2 * cell_size + 25, r2 * cell_size + 25
             x3, y3 = c3 * cell_size + 25, r3 * cell_size + 25
 
-            # Draw lines between the cells in the SOS sequence
             self.canvas.create_line(x1, y1, x2, y2, fill=color, width=2, tags="sos_line")
             self.canvas.create_line(x2, y2, x3, y3, fill=color, width=2, tags="sos_line")
 
@@ -458,7 +435,6 @@ class SOSGUI:
             self.turn_label.config(text="Red's Turn", fg="red")
 
     def reset_board(self):
-        # Close the record file if open
         if hasattr(self, 'record_file') and self.record_file and not self.record_file.closed:
             self.record_file.close()
 
@@ -467,7 +443,6 @@ class SOSGUI:
         self.update_board()
         self.turn_label.config(text="Blue's Turn", fg="blue")
 
-        # Restart recording if enabled
         if self.record_game.get():
             self.start_recording()
 
@@ -483,24 +458,19 @@ class SOSGUI:
             self.record_file.write(f"CPUPlayers:Blue={self.game.CPU_Player['blue']},Red={self.game.CPU_Player['red']}\n")
             self.record_file.write("Moves:\n")
         else:
-            # If user cancels the save dialog, disable recording
             self.record_game.set(False)
 
     def load_game(self):
         load_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
         if load_path:
-
             with open(load_path, 'r') as file:
                 lines = file.readlines()
             self.parse_loaded_game(lines)
             self.loaded_game = True
-
         else:
-            # If no file is selected, show the startup dialog again
             self.show_startup_dialog()
 
     def parse_loaded_game(self, lines):
-        # Parse settings
         cpu_players = {'blue': False, 'red': False}
         moves = []
         for index, line in enumerate(lines):
@@ -516,7 +486,6 @@ class SOSGUI:
                 moves = lines[index + 1:]
                 break
 
-        # Initialize the game
         CPU_instance = CPU()
         if self.selected_game_mode == 'simple':
             self.game = SOSSimpleGame(self.selected_board_size, CPU_instance)
@@ -526,7 +495,6 @@ class SOSGUI:
         self.game.CPU_Player['blue'] = cpu_players['blue']
         self.game.CPU_Player['red'] = cpu_players['red']
 
-        # Set symbol choices
         self.symbol_choice_blue.set('S')
         self.symbol_choice_red.set('S')
 
@@ -536,7 +504,6 @@ class SOSGUI:
             self.create_board()
             self.create_controls()
 
-        # Apply moves
         for move_line in moves:
             if move_line.strip() == '':
                 continue
@@ -572,21 +539,16 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.title("SOS Game")
 
-    # Initialize the GUI without a game instance
     gui = SOSGUI(root, None)
-
-    # Run the popup to get board size and game mode
     gui.show_startup_dialog()
 
     if not gui.loaded_game:
-        # Create the game if a game was not loaded
         CPU_instance = CPU()
         if gui.selected_game_mode == 'simple':
             game = SOSSimpleGame(gui.selected_board_size, CPU_instance)
         elif gui.selected_game_mode == 'general':
             game = SOSGeneralGame(gui.selected_board_size, CPU_instance)
 
-        # Assign the created game to the GUI and complete setup
         gui.game = game
         gui.setup_game()
 
